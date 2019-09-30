@@ -7,11 +7,19 @@ bool pendulo = false;
 bool shapes = false;
 bool shapes3D = false;
 bool images = false;
-bool texts = true;
-bool fonts = true;
-bool audios = true;
-bool keyboarding = true;
+bool texts = false;
+bool fonts = false;
+bool audios = false;
+bool keyboarding = false;
 bool vertexes = false;
+bool shapes3DWireframe = false;
+bool enablingSmoothing = false;
+bool workingOfParameter = false;
+bool workingOfPushMatrix1 = false;
+bool workingOfPushMatrix1WithOutPushPopMatrix = false;
+bool workingOfPushMatrix2 = false;
+bool liveCamera = false;
+bool workingWithOffscreen = true;
 
 
 void ofApp::ifPenduloSetup()
@@ -61,7 +69,6 @@ void ofApp::ifPenduloDraw()
 }
 
 
-
 void ofApp::ifShapes()
 {
 	ofNoFill();
@@ -86,6 +93,14 @@ void ofApp::if3DShapes()
 	ofDrawIcoSphere(352, 256, 0, 32);
 	ofDrawPlane(448, 256, 64, 64);
 	ofDrawSphere(544, 256, 32);
+}
+
+void ofApp::if3dShapesWireFrame()
+{
+	ofSetColor(255, 255, 255, 255);
+	sphere.drawWireframe();
+	//ofNoFill();
+	//sphere.draw();
 }
 
 void ofApp::ifImageSetup()
@@ -164,6 +179,139 @@ void ofApp::ifVertex()
 	ofEndShape();
 }
 
+void ofApp::ifEnablingSmoothing()
+{
+	ofDrawLine(64, 64, 256, 128);
+
+	ofDrawCircle(ofGetWidth() / 2, ofGetHeight() / 2, 128);
+}
+
+void ofApp::ifEnablingSmoothingSetup()
+{
+	ofBackground(60);
+	ofSetLineWidth(4.0);
+	ofEnableSmoothing();
+	
+	ofSetCircleResolution(128);
+}
+
+void ofApp::ifWorkingOfParameterSetup()
+{
+	sliderGroup.setName("sliders");
+
+	sliderGroup.add(intSlider.set("int slider", 3, 3, 64));
+
+	sliderGroup.add(floatSlider.set("float slider", 32, 32, 256));
+
+	circle.setup();
+
+	mainGroup.add(circle.params);
+
+	mainGroup.add(sliderGroup);
+
+	gui.setup(mainGroup);
+}
+
+void ofApp::ifWorkingOfParameter()
+{
+	ofSetColor(circle.colors->x, circle.colors->y, circle.colors->z);
+	ofDrawCircle(circle.x, circle.y, floatSlider);
+	gui.draw();
+}
+
+void ofApp::ifWorkingOfParameterUpdate()
+{
+	ofSetCircleResolution(intSlider);
+}
+
+void ofApp::ifWorkingWithOfPushMatrix1()
+{
+	//stripePattern
+	ofSetColor(ofColor::white);
+	ofSetLineWidth(3.0);
+	if (workingOfPushMatrix1WithOutPushPopMatrix)
+	{
+		for (int i = 0; i < 20; i++)
+		{
+			ofTranslate(i * 20, 0);
+			ofLine(0, -100, 0, 100);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			ofPushMatrix();
+			ofTranslate(i * 20, 0);
+			ofLine(0, -100, 0, 100);
+			ofPopMatrix();
+		}
+	}
+	
+}
+
+void ofApp::ifWorkingWithOfPushMatrix2()
+{
+	//stripePattern 2
+	ofSetColor(ofColor::white); 
+	ofSetLineWidth(3.0); 
+	ofNoFill(); 
+	for (int i = -50; i < 50; i++) 
+	{ 
+		ofPushMatrix();  
+		ofTranslate(i * 20, 0);  
+		ofRotate(i * 5);  
+		ofScale(6, 6);  
+		ofTriangle(0, 0, -50, 100, 50, 100);  
+		ofPopMatrix(); 
+	}
+}
+
+void ofApp::ifLiveCameraSetup()
+{
+	camera.setDeviceID(0);  
+	camera.setDesiredFrameRate(30);  
+	camera.initGrabber(640, 480);
+}
+
+void ofApp::ifLiveCameraUpdate()
+{
+	if (camera.isInitialized()) 
+		camera.update();
+}
+
+void ofApp::ifLiveCamera()
+{
+	if (camera.isInitialized())
+	{ 
+		ofSetColor(255);  
+		camera.draw(0, 0, ofGetWidth()/2, ofGetHeight()/2); 
+	}
+}
+
+void ofApp::ifFboSetup()
+{
+	fbo.allocate(ofGetWidth(), ofGetHeight());
+
+	fbo.begin();
+
+	ofClear(255);
+
+	fbo.end();
+}
+
+void ofApp::ifFbo()
+{
+	fbo.begin();
+	  ofSetColor(255);
+
+	  ofDrawCircle(x, y, 16);
+
+
+	fbo.end();
+
+	fbo.draw(0, 0);
+}
 
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -194,6 +342,28 @@ void ofApp::setup()
 	{
 		ifKeyboardingSetup();
 	}
+	if (shapes3DWireframe)
+	{
+		sphere.setGlobalPosition(250, 250, 0);
+		sphere.set(200,100);
+	}
+	if (enablingSmoothing)
+	{
+		ifEnablingSmoothingSetup();
+	}
+	if (workingOfParameter)
+	{
+		ifWorkingOfParameterSetup();
+	}
+
+	if (liveCamera)
+	{
+		ifLiveCameraSetup();
+	}
+	if (workingWithOffscreen)
+	{
+		ifFboSetup();
+	}
 }
 
 //--------------------------------------------------------------
@@ -202,6 +372,15 @@ void ofApp::update()
 	if (pendulo)
 	{
 		ifPenduloUpdate();
+	}
+
+	if (workingOfParameter)
+	{
+		ifWorkingOfParameterUpdate();
+	}
+	if (liveCamera)
+	{
+		ifLiveCameraUpdate();
 	}
 }
 
@@ -244,6 +423,42 @@ void ofApp::draw()
 		ifVertex();
 	}
 
+	if (shapes3DWireframe)
+	{
+		if3dShapesWireFrame();
+	}
+
+	if (enablingSmoothing)
+	{
+		ifEnablingSmoothing();
+	}
+
+	if (workingOfParameter)
+	{
+		ifWorkingOfParameter();
+	}
+
+	if (workingOfPushMatrix1)
+	{
+		ifWorkingWithOfPushMatrix1();
+	}
+
+	if (workingOfPushMatrix2)
+	{
+		ofPushMatrix();
+		ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+		ifWorkingWithOfPushMatrix2();
+		ofPopMatrix(); 	
+	}
+
+	if (liveCamera)
+	{
+		ifLiveCamera();
+	}
+	if (workingWithOffscreen)
+	{
+		ifFbo();
+	}
 }
 
 //--------------------------------------------------------------
@@ -286,8 +501,10 @@ void ofApp::mouseMoved(int x, int y ){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
+void ofApp::mouseDragged(int x, int y, int button)
+{
+	this->x = x;
+	this->y = y;
 }
 
 //--------------------------------------------------------------

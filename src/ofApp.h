@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
+#include "Circle.h"
 
 class ofApp : public ofBaseApp
 {
@@ -8,6 +10,8 @@ class ofApp : public ofBaseApp
 		ofImage image;
 		int x;
 		int y;
+
+		ofSpherePrimitive sphere;
 
 		ofTrueTypeFont font;
 		string text;
@@ -19,6 +23,21 @@ class ofApp : public ofBaseApp
 		ofPoint pos;			//Ball's position
 		ofPoint velocity;		//Ball's velocity
 
+		ofxPanel gui;
+
+		ofParameterGroup sliderGroup;
+
+		ofParameter<int> intSlider;
+
+		ofParameter<float> floatSlider;
+
+		Circle circle;
+
+		ofParameterGroup mainGroup;
+
+		ofVideoGrabber camera;
+
+		ofFbo fbo;
 
 	public:
 		void ifPenduloSetup();
@@ -26,6 +45,7 @@ class ofApp : public ofBaseApp
 		void ifPenduloDraw();
 		void ifShapes();
 		void if3DShapes();
+		void if3dShapesWireFrame();
 		void ifImageSetup();
 		void ifImage();
 		void ifText();
@@ -34,6 +54,16 @@ class ofApp : public ofBaseApp
 		void ifAudioSetup();
 		void ifKeyboardingSetup();
 		void ifVertex();
+
+		void ifEnablingSmoothing();
+
+		void ifEnablingSmoothingSetup();
+
+		void ifWorkingOfParameterSetup();
+
+		void ifWorkingOfParameter();
+
+		void ifWorkingOfParameterUpdate();
 
 		void setup();
 		void update();
@@ -52,4 +82,18 @@ class ofApp : public ofBaseApp
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
+		void ifWorkingWithOfPushMatrix1();
+
+		void ifWorkingWithOfPushMatrix2();
+
+		void ifLiveCameraSetup();
+
+		void ifLiveCameraUpdate();
+
+		void ifLiveCamera();
+
+		void ifFboSetup();
+
+		void ifFbo();
+
 };
